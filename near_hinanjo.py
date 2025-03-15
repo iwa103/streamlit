@@ -3,6 +3,7 @@ import folium
 from geopy.distance import geodesic
 import streamlit as st
 from streamlit_folium import st_folium
+import os
 
 # CSVファイルからデータを読み込み、「要配慮者」の行を除外する関数
 @st.cache_data
@@ -51,6 +52,11 @@ def find_nearest_shelters(df, lat, lon, top_n=5):
     df['距離(km)'] = df.apply(lambda row: geodesic((lat, lon), (row['緯度'], row['経度'])).km, axis=1)
     return df.sort_values(by='距離(km)').head(top_n)
 
+# 地図をHTMLファイルとして保存する関数
+def save_map_as_html(map_object, file_name="map.html"):
+    map_object.save(file_name)
+    return file_name
+
 # Streamlitアプリのメイン処理
 def main():
     st.title("避難所検索アプリ")
@@ -83,9 +89,23 @@ def main():
         nearest_shelters_display = nearest_shelters[['施設・場所名', '距離(km)']]
         st.table(nearest_shelters_display)
 
-        # 地図を生成して表示
+        # 地図を生成
         map_object = plot_on_map(lat, lon, nearest_shelters)
+
+        # 地図をHTMLファイルとして保存
+        saved_file = save_map_as_html(map_object, file_name="nearest_shelters_map.html")
+
+        # 地図をStreamlitで表示
         st_folium(map_object, width=700, height=500)
+
+        # HTMLファイルをダウンロード可能にする
+        with open(saved_file, "rb") as f:
+            st.download_button(
+                label="地図をHTMLファイルとしてダウンロード",
+                data=f,
+                file_name=os.path.basename(saved_file),
+                mime="text/html"
+            )
 
     except ValueError:
         st.error("入力が正しくありません。緯度と経度をカンマ区切りで入力してください（例: 33.81167462685436, 132.77887072795122）。")
