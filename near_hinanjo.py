@@ -3,7 +3,6 @@ import folium
 from geopy.distance import geodesic
 import streamlit as st
 from streamlit_folium import st_folium
-from folium.plugins import MarkerCluster
 
 # CSVファイルからデータを読み込み、「要配慮者」の行を除外する関数
 @st.cache_data
@@ -21,14 +20,10 @@ def load_and_preprocess_data(file_path):
     return df_filtered
 
 # 地図を生成する関数
-def plot_on_map(current_lat, current_lon, nearest_shelters, tile_option="Google Maps"):
+def plot_on_map(current_lat, current_lon, nearest_shelters):
     # 地図の中心を現在位置に設定
     map_center = [current_lat, current_lon]
-    tile_options = {
-        "Google Maps": "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
-        "OpenStreetMap": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    }
-    m = folium.Map(location=map_center, zoom_start=14, tiles=tile_options[tile_option], attr=tile_option)
+    m = folium.Map(location=map_center, zoom_start=14, tiles="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", attr="Google Maps")
 
     # 現在位置を赤いマーカーで表示
     folium.Marker(
@@ -37,9 +32,7 @@ def plot_on_map(current_lat, current_lon, nearest_shelters, tile_option="Google 
         icon=folium.Icon(color="red", icon="home")
     ).add_to(m)
 
-    # マーカークラスタリングを使用
-    marker_cluster = MarkerCluster().add_to(m)
-
+    # 避難所をマーカーで表示
     for _, row in nearest_shelters.iterrows():
         distance_km = row['距離(km)']
         marker_color = "green" if distance_km < 0.5 else "blue" if distance_km < 1.0 else "lightgray"
@@ -48,7 +41,7 @@ def plot_on_map(current_lat, current_lon, nearest_shelters, tile_option="Google 
             location=[row['緯度'], row['経度']],
             popup=folium.Popup(popup_content, max_width=300),
             icon=folium.Icon(color=marker_color, icon="info-sign")
-        ).add_to(marker_cluster)
+        ).add_to(m)
 
     return m
 
@@ -64,8 +57,13 @@ def main():
 
     # 現在位置の入力
     user_input = st.text_input("現在位置の緯度・経度を入力してください（例: 33.81167462685436, 132.77887072795122）:")
+    
     try:
         # 入力フォーマットの正規化
+        if not user_input:
+            st.info("緯度・経度を入力してください。")
+            return
+        
         user_input = user_input.strip()  # 前後の空白を削除
         user_input = user_input.strip('()')  # カッコを削除
         user_input = user_input.replace(" ", "")  # スペースを削除
@@ -85,11 +83,8 @@ def main():
         nearest_shelters_display = nearest_shelters[['施設・場所名', '距離(km)']]
         st.table(nearest_shelters_display)
 
-        # 地図タイルの選択
-        tile_option = st.selectbox("地図スタイルを選択", ["Google Maps", "OpenStreetMap"])
-
         # 地図を生成して表示
-        map_object = plot_on_map(lat, lon, nearest_shelters, tile_option)
+        map_object = plot_on_map(lat, lon, nearest_shelters)
         st_folium(map_object, width=700, height=500)
 
     except ValueError:
