@@ -35,7 +35,7 @@ def plot_on_map(current_lat, current_lon, nearest_shelters):
     # 避難所をマーカーで表示
     for _, row in nearest_shelters.iterrows():
         distance_km = row['距離(km)']
-        marker_color = "green" if distance_km < 0.5 else "blue" if distance_km < 1.0 else "lightgray"
+        marker_color = "green" if distance_km < 0.5 else "darkblue" if distance_km < 1.0 else "lightgray"
         popup_content = f"<b>{row['施設・場所名']}</b><br>距離: {distance_km:.1f} km<br>"
         folium.Marker(
             location=[row['緯度'], row['経度']],
