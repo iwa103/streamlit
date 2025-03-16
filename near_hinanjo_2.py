@@ -22,7 +22,6 @@ def load_data(file_path, key_column=None):
         columns_to_keep.append('経度')
     if 'df2_地震' in df.columns:
         columns_to_keep.append('df2_地震')
-
     if 'df2_津波' in df.columns:
         columns_to_keep.append('df2_津波')
     if 'df2_高潮' in df.columns:
@@ -42,13 +41,20 @@ def load_data(file_path, key_column=None):
 
 # 最も近い避難所を検索する関数
 @st.cache_data
-def find_nearest_shelters(df, lat, lon, top_n=5):
+def find_nearest_shelters(df, lat, lon, filter_column=None, filter_value=None, top_n=5):
     # 現在地からの距離を計算
     df['距離(km)'] = df.apply(
         lambda row: geodesic((lat, lon), (row['緯度'], row['経度'])).km, axis=1
     )
+
+    # 条件によるフィルタリング
+    if filter_column and filter_value:
+        filtered_df = df[df[filter_column] == filter_value]
+    else:
+        filtered_df = df
+
     # 距離が近い順にソートし、上位N件を取得
-    return df.sort_values(by='距離(km)').head(top_n)
+    return filtered_df.sort_values(by='距離(km)').head(top_n)
 
 # 地図を生成する関数
 def plot_on_map(current_lat, current_lon, nearest_shelters):
@@ -81,11 +87,7 @@ def main():
     st.title("避難所検索アプリ")
 
     try:
-
-
-
-
-        # 2つのCSVファイルを読み込み
+        # CSVファイルを読み込み
         file_path1 = "mergeFromCity_1.csv"  # DF1
         file_path2 = "matsu_hinan.csv"     # DF2
 
@@ -108,33 +110,27 @@ def main():
             st.info("緯度・経度を入力してください。")
             return
 
-        user_input = user_input.strip()  # 前後の空白を削除
-        user_input = user_input.strip('()')  # カッコを削除
-        user_input = user_input.replace(" ", "")  # 
-        
-        # 緯度と経度を分割して数値に変換
-        lat, lon = map(float, user_input.split(","))
+        user_input = user_input.strip().strip('()').replace(" ", "")  # 前後の空白やカッコを削除
+        lat, lon = map(float, user_input.split(","))  # 緯度と経度を分割して数値に変換
 
         # 最も近い避難所を検索
         nearest_shelters = find_nearest_shelters(
             combined_df,
             lat,
             lon,
-            filter_column="df2_地震",
-            filter_value=filter_value,
+            filter_column="df2_地震",  # フィルタリング対象の列名
+            filter_value=filter_value,  # フィルタリング条件（例: "○"）
             top_n=5
         )
 
-        # 結合結果を確認
-        #st.subheader("結合されたデータ (DF3)")
-        #st.write(combined_df)
-
-        # 最も近い避難所を検索（上位5つ）
-        nearest_shelters = find_nearest_shelters(combined_df, lat, lon, top_n=5)
+        # 条件に一致する避難所がない場合の警告
+        if len(nearest_shelters) == 0:
+            st.warning(f"'{filter_value}' に一致する避難所が見つかりませんでした。")
+            return
 
         # 結果をテーブルで表示
         st.subheader("最も近い避難所一覧")
-        display_columns = ['施設・場所名', '距離(km)', 'df2_地震','df2_津波','df2_高潮','df2_洪水','df2_土砂','共通ID']
+        display_columns = ['施設・場所名', '距離(km)', 'df2_地震', 'df2_津波', 'df2_高潮', 'df2_洪水', 'df2_土砂', '共通ID']
         nearest_shelters_display = nearest_shelters[display_columns]
         st.table(nearest_shelters_display)
 
