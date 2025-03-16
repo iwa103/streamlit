@@ -107,6 +107,22 @@ def main():
         # キー列の名前を統一して結合
         combined_df = pd.merge(df1, df2, on="共通ID", how="left")
 
+        # フィルタリング条件の選択 追加部分
+        filter_option = st.selectbox("地震情報を選択", ["全て", "〇", "△", "✕"])
+        filter_value = None
+        if filter_option != "全て":
+            filter_value = filter_option
+
+        # 最も近い避難所を検索
+        nearest_shelters = find_nearest_shelters(
+            combined_df,
+            lat,
+            lon,
+            filter_column="df2_地震",
+            filter_value=filter_value,
+            top_n=5
+        )
+
         # 結合結果を確認
         #st.subheader("結合されたデータ (DF3)")
         #st.write(combined_df)
