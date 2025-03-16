@@ -83,8 +83,7 @@ def main():
     try:
 
 
-        # 緯度と経度を分割して数値に変換
-        lat, lon = map(float, user_input.split(","))
+
 
         # 2つのCSVファイルを読み込み
         file_path1 = "mergeFromCity_1.csv"  # DF1
@@ -114,7 +113,10 @@ def main():
 
         user_input = user_input.strip()  # 前後の空白を削除
         user_input = user_input.strip('()')  # カッコを削除
-        user_input = user_input.replace(" ", "")  # スペースを削除
+        user_input = user_input.replace(" ", "")  # 
+        
+        # 緯度と経度を分割して数値に変換
+        lat, lon = map(float, user_input.split(","))
 
         # 最も近い避難所を検索
         nearest_shelters = find_nearest_shelters(
