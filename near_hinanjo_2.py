@@ -11,6 +11,12 @@ def load_and_preprocess_data(file_path, key_column=None):
     # CSVファイルを読み込む
     df = pd.read_csv(file_path)
 
+    # 必要な列が存在するか確認
+    required_columns = ['施設・場所名', '住所', '緯度', '経度']
+    missing_columns = [col for col in required_columns if col not in df.columns]
+    if missing_columns:
+        raise ValueError(f"次の必要な列が見つかりません: {missing_columns}")
+
     # 「受入対象者」列に「要配慮者」と書かれている行を除外
     if '受入対象者' in df.columns:
         df_filtered = df[df['受入対象者'] != '要配慮者']
@@ -18,7 +24,7 @@ def load_and_preprocess_data(file_path, key_column=None):
         df_filtered = df  # 「受入対象者」列がない場合、そのまま使用
 
     # 必要な列のみを残す（オプション）
-    columns_to_keep = ['施設・場所名', '住所', '緯度', '経度']
+    columns_to_keep = required_columns.copy()
     if key_column and key_column in df_filtered.columns:
         columns_to_keep.append(key_column)  # キー列も保持
     if 'df2_地区名' in df_filtered.columns:  # 追加で確認用の列を保持
@@ -119,10 +125,10 @@ def main():
                 mime="text/html"
             )
 
-    except ValueError:
-        st.error("入力が正しくありません。緯度と経度をカンマ区切りで入力してください（例: 33.81167462685436, 132.77887072795122）。")
+    except ValueError as ve:
+        st.error(f"エラーが発生しました: {ve}")
     except Exception as e:
-        st.error(f"エラーが発生しました: {e}")
+        st.error(f"予期せぬエラーが発生しました: {e}")
 
 if __name__ == "__main__":
     main()
