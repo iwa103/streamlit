@@ -95,9 +95,9 @@ def main():
 
     st.markdown("""
     <div style='text-align: left; line-height: 1.5;'>
-        <p style='font-size: 28px; margin: 0;'>避難所検索アプリ</p>
+        <p style='font-size: 32px; margin: 0;'>避難所検索アプリ</p>
         <p style='font-size: 24px; margin: 0;'>・災害対応種別対応版</p>
-        <p style='font-size: 24px; margin: 0;'>・対象地域　松山市</p>
+        <p style='font-size: 24px; margin: 0;'>・対象地域　松山市(2025/03/16追加)</p>
     </div>
     """, unsafe_allow_html=True)
 
