@@ -95,9 +95,9 @@ def main():
 
     st.markdown("""
     <div style='text-align: center; line-height: 1.0;'>
-        <h2 style='margin: 0;'>避難所検索アプリ</h2>
-        <h2 style='margin: 0;'>災害対応種別対応版</h2>
-        <h2 style='margin: 0;'>対象地域　松山市</h2>
+        <p style='font-size: 24px; margin: 0;'>避難所検索アプリ</p>
+        <p style='font-size: 24px; margin: 0;'>災害対応種別対応版</p>
+        <p style='font-size: 24px; margin: 0;'>対象地域　松山市</p>
     </div>
     """, unsafe_allow_html=True)
 
