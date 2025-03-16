@@ -97,12 +97,12 @@ def main():
         combined_df = pd.merge(df1, df2, on="共通ID", how="left")
 
         # フィルタリング条件の選択 追加部分
-        filter_value = None
-        filter_option = st.selectbox("地震情報を選択", ["全て", "○", "△", "×"])
-            filter_value = filter_option
+        #filter_value = None
+        filter_option = st.selectbox("地震情報を選択", ["○", "△", "×"])
+        #filter_value = filter_option
 
-        if filter_option != "全て":
-            filter_value = filter_option
+        #if filter_option != "全て":
+        #    filter_value = filter_option
 
         # 現在位置の入力
         user_input = st.text_input("現在位置の緯度・経度を入力してください（例: 33.81167462685436, 132.77887072795122）:")
