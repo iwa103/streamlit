@@ -3,6 +3,7 @@ import streamlit as st
 from geopy.distance import geodesic
 import folium
 from streamlit_folium import st_folium
+import os
 
 # CSVファイルからデータを読み込む関数
 @st.cache_data
