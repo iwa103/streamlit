@@ -94,10 +94,10 @@ def main():
     # st.title("避難所検索アプリ（災害種別対応版　松山市のみ）")
 
     st.markdown("""
-    <div style='text-align: center; line-height: 1.5;'>
-        <p style='font-size: 24px; margin: 0;'>避難所検索アプリ</p>
-        <p style='font-size: 24px; margin: 0;'>　災害対応種別対応版</p>
-        <p style='font-size: 24px; margin: 0;'>　対象地域　松山市</p>
+    <div style='text-align: left; line-height: 1.5;'>
+        <p style='font-size: 28px; margin: 0;'>避難所検索アプリ</p>
+        <p style='font-size: 24px; margin: 0;'>・災害対応種別対応版</p>
+        <p style='font-size: 24px; margin: 0;'>・対象地域　松山市</p>
     </div>
     """, unsafe_allow_html=True)
 
