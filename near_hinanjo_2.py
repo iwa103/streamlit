@@ -97,9 +97,10 @@ def main():
         combined_df = pd.merge(df1, df2, on="共通ID", how="left")
 
         # フィルタリング条件の選択 追加部分
-        filter_option = st.selectbox("地震情報を選択", ["全て", "○", "△", "×"])
-
         filter_value = None
+        filter_option = st.selectbox("地震情報を選択", ["全て", "○", "△", "×"])
+            filter_value = filter_option
+
         if filter_option != "全て":
             filter_value = filter_option
 
