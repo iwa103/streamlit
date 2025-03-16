@@ -22,6 +22,16 @@ def load_data(file_path, key_column=None):
         columns_to_keep.append('経度')
     if 'df2_地震' in df.columns:
         columns_to_keep.append('df2_地震')
+
+    if 'df2_津波' in df.columns:
+        columns_to_keep.append('df2_津波')
+    if 'df2_高潮' in df.columns:
+        columns_to_keep.append('df2_高潮')
+    if 'df2_洪水' in df.columns:
+        columns_to_keep.append('df2_洪水')
+    if 'df2_土砂' in df.columns:
+        columns_to_keep.append('df2_土砂')
+
     if key_column and key_column in df.columns:
         columns_to_keep.append(key_column)  # キー列も保持
 
@@ -106,7 +116,7 @@ def main():
 
         # 結果をテーブルで表示
         st.subheader("最も近い避難所一覧")
-        display_columns = ['施設・場所名', '距離(km)', 'df2_地震', '共通ID']
+        display_columns = ['施設・場所名', '距離(km)', 'df2_地震','df2_津波','df2_高潮','df2_洪水','df2_土砂','共通ID']
         nearest_shelters_display = nearest_shelters[display_columns]
         st.table(nearest_shelters_display)
 
