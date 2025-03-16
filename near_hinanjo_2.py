@@ -94,7 +94,7 @@ def main():
     # st.title("避難所検索アプリ（災害種別対応版　松山市のみ）")
 
     st.markdown("""
-    <div style='text-align: center; line-height: 1.5;'>
+    <div style='text-align: center; line-height: 1.0;'>
         <h2>避難所検索アプリ</h2>
         <h2>災害対応種別対応版</h2>
         <h2>対象地域　松山市</h2>
