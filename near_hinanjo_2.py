@@ -152,9 +152,22 @@ def main():
         # 地図を生成
         map_object = plot_on_map(lat, lon, nearest_shelters)
 
+        # 地図をHTMLファイルとして保存
+        saved_file = save_map_as_html(map_object, file_name="nearest_shelters_map.html")
+
         # 地図をStreamlitで表示
         st.subheader("地図表示")
         st_folium(map_object, width=700, height=500)
+
+        # HTMLファイルをダウンロード可能にする
+        with open(saved_file, "rb") as f:
+            st.download_button(
+                label="地図をHTMLファイルとしてダウンロード",
+                data=f,
+                file_name=os.path.basename(saved_file),
+                mime="text/html"
+            )
+
 
     except ValueError as ve:
         st.error(f"エラーが発生しました: {ve}")
