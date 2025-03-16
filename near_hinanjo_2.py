@@ -83,6 +83,12 @@ def plot_on_map(current_lat, current_lon, nearest_shelters):
 
     return m
 
+# 地図をHTMLファイルとして保存する関数
+def save_map_as_html(map_object, file_name="map.html"):
+    map_object.save(file_name)
+    return file_name
+
+
 # Streamlitアプリのメイン処理
 def main():
     st.title("避難所検索アプリ")
