@@ -92,10 +92,13 @@ def save_map_as_html(map_object, file_name="map.html"):
 # Streamlitアプリのメイン処理
 def main():
     # st.title("避難所検索アプリ（災害種別対応版　松山市のみ）")
+
     st.markdown("""
-    ## 避難所検索アプリ<br>
-    ## 災害対応種別対応版<br>
-    ## 対象地域：松山市
+    <div style='text-align: center; line-height: 1.5;'>
+        <h2>避難所検索アプリ</h2>
+        <h2>災害対応種別対応版</h2>
+        <h2>対象地域　松山市</h2>
+    </div>
     """, unsafe_allow_html=True)
 
     try:
