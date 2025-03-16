@@ -81,17 +81,7 @@ def main():
     st.title("避難所検索アプリ")
 
     try:
-        # 現在位置の入力
-        user_input = st.text_input("現在位置の緯度・経度を入力してください（例: 33.81167462685436, 132.77887072795122）:")
 
-        # 入力フォーマットの正規化
-        if not user_input:
-            st.info("緯度・経度を入力してください。")
-            return
-
-        user_input = user_input.strip()  # 前後の空白を削除
-        user_input = user_input.strip('()')  # カッコを削除
-        user_input = user_input.replace(" ", "")  # スペースを削除
 
         # 緯度と経度を分割して数値に変換
         lat, lon = map(float, user_input.split(","))
@@ -113,6 +103,18 @@ def main():
         filter_value = None
         if filter_option != "全て":
             filter_value = filter_option
+
+        # 現在位置の入力
+        user_input = st.text_input("現在位置の緯度・経度を入力してください（例: 33.81167462685436, 132.77887072795122）:")
+
+        # 入力フォーマットの正規化
+        if not user_input:
+            st.info("緯度・経度を入力してください。")
+            return
+
+        user_input = user_input.strip()  # 前後の空白を削除
+        user_input = user_input.strip('()')  # カッコを削除
+        user_input = user_input.replace(" ", "")  # スペースを削除
 
         # 最も近い避難所を検索
         nearest_shelters = find_nearest_shelters(
