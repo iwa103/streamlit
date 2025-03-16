@@ -65,7 +65,7 @@ def plot_on_map(current_lat, current_lon, nearest_shelters):
     # 現在位置を赤いマーカーで表示
     folium.Marker(
         location=[current_lat, current_lon],
-        popup="現在位置",
+        popup=folium.Popup("<b>現在位置</b>", max_width=300),  # 変更点：HTML形式でポップアップを指定,
         icon=folium.Icon(color="red", icon="home")
     ).add_to(m)
 
