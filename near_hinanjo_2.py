@@ -91,7 +91,12 @@ def save_map_as_html(map_object, file_name="map.html"):
 
 # Streamlitアプリのメイン処理
 def main():
-    st.title("避難所検索アプリ")
+    # st.title("避難所検索アプリ（災害種別対応版　松山市のみ）")
+    st.markdown("""
+    # 避難所検索アプリ<br>
+    災害対応種別対応版<br>
+    対象地域：松山市
+    """, unsafe_allow_html=True)
 
     try:
         # CSVファイルを読み込み
