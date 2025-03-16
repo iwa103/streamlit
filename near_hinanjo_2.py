@@ -99,7 +99,7 @@ def main():
         combined_df = pd.merge(df1, df2, on="共通ID", how="left")
 
         # フィルタリング条件の選択
-        filter_option = st.selectbox("地震情報を選択", ["○", "△", "×"])
+        filter_option = st.selectbox("地震対応可否", ["○", "△", "×"])
         filter_value = filter_option  # 常に選択された値を使用
 
         # 現在位置の入力
