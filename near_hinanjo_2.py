@@ -98,9 +98,24 @@ def main():
         # キー列の名前を統一して結合
         combined_df = pd.merge(df1, df2, on="共通ID", how="left")
 
-        # フィルタリング条件の選択
-        filter_option = st.selectbox("地震対応可否", ["○", "△", "×"])
-        filter_value = filter_option  # 常に選択された値を使用
+        # 災害の選択
+        disaster_options = ["地震", "津波", "高潮", "洪水", "土砂"]
+        selected_disaster = st.selectbox("対応災害を選択", disaster_options)
+
+        # 対応状況の選択
+        status_options = ["○", "△", "✕"]
+        selected_status = st.selectbox("対応状況を選択", status_options)
+
+        # 災害に対応する列名を決定
+        disaster_columns = {
+            "地震": "df2_地震",
+            "津波": "df2_津波",
+            "高潮": "df2_高潮",
+            "洪水": "df2_洪水",
+            "土砂": "df2_土砂"
+        }
+        filter_column = disaster_columns.get(selected_disaster)
+        filter_value = selected_status
 
         # 現在位置の入力
         user_input = st.text_input("現在位置の緯度・経度を入力してください（例: 33.81167462685436, 132.77887072795122）:")
@@ -118,14 +133,14 @@ def main():
             combined_df,
             lat,
             lon,
-            filter_column="df2_地震",  # フィルタリング対象の列名
-            filter_value=filter_value,  # フィルタリング条件（例: "○"）
+            filter_column=filter_column,  # 災害に対応する列名
+            filter_value=filter_value,    # 対応状況
             top_n=5
         )
 
         # 条件に一致する避難所がない場合の警告
         if len(nearest_shelters) == 0:
-            st.warning(f"'{filter_value}' に一致する避難所が見つかりませんでした。")
+            st.warning(f"'{selected_disaster}' の '{selected_status}' に一致する避難所が見つかりませんでした。")
             return
 
         # 結果をテーブルで表示
