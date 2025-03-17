@@ -96,24 +96,25 @@ def main():
     # アプリタイトルと説明
     st.title("避難所検索アプリ")
 
-    st.markdown(
-        """
-        <div style="font-size: 20px; line-height: 1.5;">
-            <h2 style='margin-bottom: 5px;'>災害対応種別対応版</h2>
-            <h3 style='margin-bottom: 10px;'>対象地域: 松山市、宇和島市、愛南町、砥部町、伊方町、鬼北町、久万高原町、松前町</h3>
-        
-            <strong>使い方:</strong>
-            <ol>
-                <li>Googleマップで目的地点の緯度経度を取得してください。
+    st.markdown("""
+    <div style="font-size: 20px; line-height: 1.5;">
+        <h2 style="margin-bottom: 5px;">災害対応種別対応版</h2>
+        <h3 style="margin-bottom: 10px;">対象地域: 松山市、宇和島市、愛南町、砥部町、伊方町、鬼北町、久万高原町、松前町</h3>
+        <p><strong>使い方:</strong></p>
+        <ol>
+            <li>Googleマップで目的地点の緯度経度を取得してください。
                 <a href="https://www.google.com/maps/" target="_blank">Googleマップ</a>
-                </li>
-                <li>取得した緯度経度を入力してください。</li>
-                <li>入力後、自動で最も近い避難所が検索され、地図上に表示されます。</li>
-            </ol>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+            </li>
+            <li>取得した緯度経度を入力してください。</li>
+            <li>入力後、自動で最も近い避難所が検索され、地図上に表示されます。</li>
+        </ol>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+
+
+
 
     try:
         # CSVファイルを読み込み
@@ -132,7 +133,7 @@ def main():
         selected_disaster = st.selectbox("対応災害を選択", disaster_options)
 
         # 対応状況の選択
-        status_options = ["○", "△", "✕"]
+        status_options = ["〇", "△", "✕"]
         selected_status = st.selectbox("対応状況を選択", status_options)
 
         # 災害に対応する列名を決定
