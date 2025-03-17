@@ -104,7 +104,7 @@ def main():
     try:
         # CSVファイルを読み込み
         file_path1 = "mergeFromCity_1.csv"  # DF1
-        file_path2 = "matsu_hinan.csv"     # DF2
+        file_path2 = "ehime_hinan.csv"     # DF2
 
         # データを前処理（それぞれのキー列を指定）
         df1 = load_data(file_path1, key_column="共通ID")
