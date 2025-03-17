@@ -15,17 +15,21 @@ def load_data(file_path, key_column=None):
     if key_column and key_column in df.columns:
         columns_to_keep.append(key_column)
     df_filtered = df[columns_to_keep]
-    
+
     return df_filtered
 
 # 最も近い避難所を検索する関数
 @st.cache_data
 def find_nearest_shelters(df, lat, lon, filter_column=None, filter_value=None, top_n=5):
     df['距離(km)'] = df.apply(lambda row: geodesic((lat, lon), (row['緯度'], row['経度'])).km, axis=1)
-    if filter_column and filter_value is not None:
-        filtered_df = df[df[filter_column] == filter_value]
+
+    # フィルタリング前にカラムのデータ型を整数型に変換
+    if filter_column:
+        df[filter_column] = df[filter_column].astype(int)
+        filtered_df = df[df[filter_column] == int(filter_value)]
     else:
         filtered_df = df
+
     return filtered_df.sort_values(by='距離(km)').head(top_n)
 
 # Streamlitアプリのメイン処理
@@ -57,6 +61,11 @@ def main():
         df1 = load_data(file_path1, key_column="共通ID")
         df2 = load_data(file_path2, key_column="共通ID")
         combined_df = pd.merge(df1, df2, on="共通ID", how="left")
+
+        # 結合後のNaNを0にしてデータ型を整数に統一
+        combined_df.fillna(0, inplace=True)
+        combined_df[['df2_地震', 'df2_津波', 'df2_高潮', 'df2_洪水', 'df2_土砂']] = \
+            combined_df[['df2_地震', 'df2_津波', 'df2_高潮', 'df2_洪水', 'df2_土砂']].astype(int)
 
         disaster_options = ["地震", "津波", "高潮", "洪水", "土砂"]
         selected_disaster = st.selectbox("対応災害を選択", disaster_options)
