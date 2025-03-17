@@ -111,11 +111,6 @@ def main():
     </div>
     """, unsafe_allow_html=True)
 
-
-
-
-
-
     try:
         # CSVファイルを読み込み
         file_path1 = "mergeFromCity_1.csv"  # DF1
