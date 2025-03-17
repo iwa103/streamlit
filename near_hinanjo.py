@@ -59,7 +59,16 @@ def save_map_as_html(map_object, file_name="map.html"):
 
 # Streamlitアプリのメイン処理
 def main():
-    st.title("避難所検索アプリ")
+    #st.title("避難所検索アプリ")
+
+    # アプリタイトルと説明
+    st.title("避難所検索アプリ 20250317 update")
+    st.markdown("""
+    **使い方:** 
+    - 1.Googleマップにて目的地点の緯度経度をコピーして取得してください　[Googleマップ](https://www.google.com/maps/)  
+    - 2.緯度経度を入力してください
+    - 3.入力後、自動で最も近い避難所が検索され、地図上に表示されます。
+    """)
 
     # 現在位置の入力
     user_input = st.text_input("現在位置の緯度・経度を入力してください（例: 33.81167462685436, 132.77887072795122）:")
