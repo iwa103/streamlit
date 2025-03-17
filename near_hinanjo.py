@@ -65,6 +65,7 @@ def main():
     st.title("避難所検索アプリ")
     st.markdown("""
     20250317 update
+
     **使い方:** 
     - 1.Googleマップにて目的地点の緯度経度をコピーして取得してください　[Googleマップ](https://www.google.com/maps/)  
     - 2.緯度経度を入力してください
