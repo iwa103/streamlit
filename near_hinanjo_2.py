@@ -128,7 +128,9 @@ def main():
         selected_disaster = st.selectbox("対応災害を選択", disaster_options)
 
         # 対応状況の選択
-        status_options = ["〇", "△", "✕"]
+        status_options = ["○", "△", "✕"]
+
+        #status_options = ["〇", "△", "✕"]
         selected_status = st.selectbox("対応状況を選択", status_options)
 
         # 災害に対応する列名を決定
