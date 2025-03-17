@@ -64,16 +64,19 @@ def main():
     # アプリタイトルと説明
     st.title("避難所検索アプリ")
     st.markdown("""
-    20250317 update
-
-    **使い方:** 
-    1.Googleマップにて目的地点の緯度経度をコピーして取得してください　[Googleマップ](https://www.google.com/maps/)  
-    2.緯度経度を入力してください
-    3.入力後、自動で最も近い避難所が検索され、地図上に表示されます。
-    """)
+    <div style="font-size: 16px; line-height: 1.6;">
+        <p><strong>使い方:</strong></p>
+        <ol>
+            <li>Googleマップにて目的地点の緯度経度をコピーして取得してください　
+                <a href="https://www.google.com/maps/" target="_blank">Googleマップ</a></li>
+            <li>緯度経度を入力してください</li>
+            <li>入力後、自動で最も近い避難所が検索され、地図上に表示されます。</li>
+        </ol>
+    </div>
+    """, unsafe_allow_html=True)
 
     # 現在位置の入力
-    user_input = st.text_input("現在位置の緯度・経度を入力してください（例: 33.81167462685436, 132.77887072795122）:")
+    user_input = st.text_input("現在位置の緯度・経度を入力してください（例: 33.8116, 132.7788）:")
     
     try:
         # 入力フォーマットの正規化
