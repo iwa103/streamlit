@@ -95,21 +95,25 @@ def main():
 
     # アプリタイトルと説明
     st.title("避難所検索アプリ")
-    st.markdown("""
-    <div style="font-size: 16px; line-height: 1.5;">
-        <p style='font-size: 32px; margin: 0;'>避難所検索アプリ</p>
-        <p style='font-size: 24px; margin: 0;'>・災害対応種別対応版</p>
-        <p style='font-size: 24px; margin: 0;'>・対象地域　松山市、宇和島市、愛南町、砥部町、伊方町、鬼北町、久万高原町、松前町</p>
-                        
-        <p><strong>使い方:</strong></p>
-        <ol>
-            <li>Googleマップにて目的地点の緯度経度をコピーして取得してください　
-                <a href="https://www.google.com/maps/" target="_blank">Googleマップ</a></li>
-            <li>緯度経度を入力してください</li>
-            <li>入力後、自動で最も近い避難所が検索され、地図上に表示されます。</li>
-        </ol>
-    </div>
-    """, unsafe_allow_html=True)
+
+    st.markdown(
+        """
+        <div style="font-size: 20px; line-height: 1.5;">
+            <h2 style='margin-bottom: 5px;'>災害対応種別対応版</h2>
+            <h3 style='margin-bottom: 10px;'>対象地域: 松山市、宇和島市、愛南町、砥部町、伊方町、鬼北町、久万高原町、松前町</h3>
+        
+            <strong>使い方:</strong>
+            <ol>
+                <li>Googleマップで目的地点の緯度経度を取得してください。
+                <a href="https://www.google.com/maps/" target="_blank">Googleマップ</a>
+                </li>
+                <li>取得した緯度経度を入力してください。</li>
+                <li>入力後、自動で最も近い避難所が検索され、地図上に表示されます。</li>
+            </ol>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     try:
         # CSVファイルを読み込み
