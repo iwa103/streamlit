@@ -93,12 +93,12 @@ def save_map_as_html(map_object, file_name="map.html"):
 # Streamlitアプリのメイン処理
 def main():
     # アプリタイトル
-    st.title("避難所検索アプリ（災害対応種別対応版）")
+    st.title("避難所検索アプリ（災害別絞込み）")
 
     # アプリの説明
     st.markdown("""
     <div style="font-size: 20px; line-height: 1.5;">
-        <h3 style="margin-bottom: 10px;">対象地域: 愛媛県（２０市町）隣接自治体反映</h3>
+        <h3 style="margin-bottom: 10px;">対象地域: 愛媛県＋隣接自治体</h3>
         <p style="margin-bottom: 5px;">
             <strong>隣接自治体名:</strong><br>
             <span style="font-size: 14px;">
