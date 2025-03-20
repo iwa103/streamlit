@@ -100,6 +100,9 @@ def main():
     <div style="font-size: 20px; line-height: 1.5;">
         <h2 style="margin-bottom: 5px;">災害対応種別対応版</h2>
         <h3 style="margin-bottom: 10px;">対象地域: 愛媛県（２０市町）隣接自治体反映</h3>
+        <p style="margin-bottom: 5px;"><strong>隣接自治体名:</strong> 徳島県 三好市／香川県　観音寺市／高知県　宿毛市、四万十市、四万十町、本山町、土佐町、いの町、仁淀川町、津野町、梼原町 </p>
+        
+
         <p><strong>使い方:</strong></p>
         <ol>
             <li>Googleマップで目的地点の緯度経度を取得してください。
