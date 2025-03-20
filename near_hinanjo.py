@@ -5,19 +5,22 @@ import streamlit as st
 from streamlit_folium import st_folium
 import os
 
-# CSVファイルからデータを読み込み、「要配慮者」の行を除外する関数
+# CSVファイルからデータを読み込み、共通IDの条件で行を除外する関数
 @st.cache_data
 def load_and_preprocess_data(file_path):
     # CSVファイルを読み込む
     df = pd.read_csv(file_path)
-
-    # 「受入対象者」列に「要配慮者」と書かれている行を除外
-    df_filtered = df[df['受入対象者'] != '要配慮者']
-
-    # 必要な列のみを残す（オプション）
-    columns_to_keep = ['施設・場所名', '住所', '緯度', '経度']
+    
+    # 共通ID列を文字列として扱う
+    df['共通ID'] = df['共通ID'].astype(str)
+    
+    # 共通IDの最後から2文字目が '2' である行を除外
+    df_filtered = df[df['共通ID'].str[-2] != '2']
+    
+    # 必要な列のみを残す（共通IDも残す場合）
+    columns_to_keep = ['施設・場所名', '住所', '緯度', '経度', '共通ID']
     df_filtered = df_filtered[columns_to_keep]
-
+    
     return df_filtered
 
 # 地図を生成する関数
@@ -59,9 +62,6 @@ def save_map_as_html(map_object, file_name="map.html"):
 
 # Streamlitアプリのメイン処理
 def main():
-    #st.title("避難所検索アプリ")
-
-    # アプリタイトルと説明
     st.title("避難所検索アプリ")
     st.markdown("""
     <div style="font-size: 16px; line-height: 1.6;">
@@ -91,7 +91,7 @@ def main():
         # 緯度と経度を分割して数値に変換
         lat, lon = map(float, user_input.split(","))
 
-        # 避難所データを読み込む（「要配慮者」を除外）
+        # 避難所データを読み込む（共通IDの条件で除外）
         file_path = "mergeFromCity_1.csv"  # CSVファイルのパス
         df = load_and_preprocess_data(file_path)
 
