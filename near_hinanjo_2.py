@@ -93,9 +93,9 @@ def main():
     DESC_FONT_SIZE = "16px"        # 説明文
     SUBTEXT_FONT_SIZE = "12px"     # さらに小さい補助テキスト
 
-    # メインタイトル
+    # メインタイトル (太文字にする)
     st.markdown(f"""
-    <h1 style="font-size: {TITLE_FONT_SIZE}; font-weight: normal; margin-bottom: 10px;">
+    <h1 style="font-size: {TITLE_FONT_SIZE}; font-weight: bold; margin-bottom: 10px;">
         避難所検索アプリ（災害別絞込み）
     </h1>
     """, unsafe_allow_html=True)
