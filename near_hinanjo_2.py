@@ -99,7 +99,7 @@ def main():
     st.markdown("""
     <div style="font-size: 20px; line-height: 1.5;">
         <h2 style="margin-bottom: 5px;">災害対応種別対応版</h2>
-        <h3 style="margin-bottom: 10px;">対象地域: 愛媛県（２０市町）</h3>
+        <h3 style="margin-bottom: 10px;">対象地域: 愛媛県（２０市町）隣接自治体反映</h3>
         <p><strong>使い方:</strong></p>
         <ol>
             <li>Googleマップで目的地点の緯度経度を取得してください。
