@@ -102,9 +102,8 @@ def main():
         <h3 style="margin-bottom: 10px;">対象地域: 愛媛県（２０市町）隣接自治体反映</h3>
         <p style="margin-bottom: 5px;">
             <strong>隣接自治体名:</strong><br>
-            <span style="font-size: 14px;">
-                徳島県: 三好市<br>
-                香川県: 観音寺市<br>
+            <span style="font-size: 12px;">
+                徳島県: 三好市、香川県: 観音寺市<br>
                 高知県: 宿毛市、四万十市、四万十町、本山町、土佐町、いの町、仁淀川町、津野町、梼原町
             </span>
         </p>
