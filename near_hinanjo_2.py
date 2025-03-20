@@ -8,9 +8,8 @@ import os
 # CSVファイルからデータを読み込む関数
 @st.cache_data
 def load_data(file_path, key_column=None):
-    # CSVファイルを読み込む
     df = pd.read_csv(file_path)
-
+    
     # 必要な列を保持
     columns_to_keep = []
     if '施設・場所名' in df.columns:
@@ -35,9 +34,7 @@ def load_data(file_path, key_column=None):
     if key_column and key_column in df.columns:
         columns_to_keep.append(key_column)  # キー列も保持
 
-    # 必要な列のみを残す
     df_filtered = df[columns_to_keep]
-
     return df_filtered
 
 # 最も近い避難所を検索する関数
@@ -59,14 +56,15 @@ def find_nearest_shelters(df, lat, lon, filter_column=None, filter_value=None, t
 
 # 地図を生成する関数
 def plot_on_map(current_lat, current_lon, nearest_shelters):
-    # 地図の中心を現在位置に設定
     map_center = [current_lat, current_lon]
-    m = folium.Map(location=map_center, zoom_start=14, tiles="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", attr="Google Maps")
+    m = folium.Map(location=map_center, zoom_start=14,
+                   tiles="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+                   attr="Google Maps")
 
     # 現在位置を赤いマーカーで表示
     folium.Marker(
         location=[current_lat, current_lon],
-        popup=folium.Popup("<b>現在位置</b>", max_width=300),  # 変更点：HTML形式でポップアップを指定,
+        popup=folium.Popup("<b>現在位置</b>", max_width=300),
         icon=folium.Icon(color="red", icon="home")
     ).add_to(m)
 
@@ -88,20 +86,27 @@ def save_map_as_html(map_object, file_name="map.html"):
     map_object.save(file_name)
     return file_name
 
-
-
 # Streamlitアプリのメイン処理
 def main():
-    # アプリタイトル
-    st.title("避難所検索アプリ（災害別絞込み）")
+    # フォントサイズを変数で管理
+    TITLE_FONT_SIZE = "24px"
+    DESC_FONT_SIZE = "16px"
+    SUBTEXT_FONT_SIZE = "12px"
 
-    # アプリの説明
-    st.markdown("""
-    <div style="font-size: 20px; line-height: 1.5;">
+    # アプリタイトル（変数を利用）
+    st.markdown(f"""
+    <h1 style="font-size: {TITLE_FONT_SIZE}; font-weight: normal; margin-bottom: 10px;">
+        避難所検索アプリ（災害別絞込み）
+    </h1>
+    """, unsafe_allow_html=True)
+
+    # アプリの説明（変数を利用）
+    st.markdown(f"""
+    <div style="font-size: {DESC_FONT_SIZE}; line-height: 1.5;">
         <h3 style="margin-bottom: 10px;">対象地域: 愛媛県＋隣接自治体</h3>
         <p style="margin-bottom: 5px;">
             <strong>隣接自治体名:</strong><br>
-            <span style="font-size: 14px;">
+            <span style="font-size: {SUBTEXT_FONT_SIZE};">
                 徳島県: 三好市、香川県: 観音寺市<br>
                 高知県: 宿毛市、四万十市、四万十町、本山町、土佐町、いの町、仁淀川町、津野町、梼原町
             </span>
@@ -117,12 +122,11 @@ def main():
         </ol>
     </div>
     """, unsafe_allow_html=True)
-
-
+    
     try:
         # CSVファイルを読み込み
         file_path1 = "mergeFromCity_1.csv"  # DF1
-        file_path2 = "ehime_hinan.csv"     # DF2
+        file_path2 = "ehime_hinan.csv"       # DF2
 
         # データを前処理（それぞれのキー列を指定）
         df1 = load_data(file_path1, key_column="共通ID")
@@ -136,9 +140,7 @@ def main():
         selected_disaster = st.selectbox("対応災害を選択", disaster_options)
 
         # 対応状況の選択
-        status_options = ["O", "A", "X"] # 全て英文字　半角　大文字
-
-        #status_options = ["〇", "△", "✕"]
+        status_options = ["O", "A", "X"]
         selected_status = st.selectbox("対応状況を選択", status_options)
 
         # 災害に対応する列名を決定
@@ -160,16 +162,16 @@ def main():
             st.info("緯度・経度を入力してください。")
             return
 
-        user_input = user_input.strip().strip('()').replace(" ", "")  # 前後の空白やカッコを削除
-        lat, lon = map(float, user_input.split(","))  # 緯度と経度を分割して数値に変換
+        user_input = user_input.strip().strip('()').replace(" ", "")
+        lat, lon = map(float, user_input.split(","))
 
         # 最も近い避難所を検索
         nearest_shelters = find_nearest_shelters(
             combined_df,
             lat,
             lon,
-            filter_column=filter_column,  # 災害に対応する列名
-            filter_value=filter_value,    # 対応状況
+            filter_column=filter_column,
+            filter_value=filter_value,
             top_n=5
         )
 
@@ -202,7 +204,6 @@ def main():
                 file_name=os.path.basename(saved_file),
                 mime="text/html"
             )
-
 
     except ValueError as ve:
         st.error(f"エラーが発生しました: {ve}")
