@@ -91,7 +91,7 @@ def main():
     TITLE_FONT_SIZE = "26px"       # メインタイトル
     SUBTITLE_FONT_SIZE = "20px"    # サブ見出し
     DESC_FONT_SIZE = "16px"        # 説明文
-    SUBTEXT_FONT_SIZE = "12px"     # さらに小さい補助テキスト
+    SUBTEXT_FONT_SIZE = "14px"     # さらに小さい補助テキスト
 
     # メインタイトル (太文字にする)
     st.markdown(f"""
