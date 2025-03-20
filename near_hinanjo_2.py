@@ -5,12 +5,10 @@ import folium
 from streamlit_folium import st_folium
 import os
 
-# CSVファイルからデータを読み込む関数
 @st.cache_data
 def load_data(file_path, key_column=None):
     df = pd.read_csv(file_path)
-    
-    # 必要な列を保持
+
     columns_to_keep = []
     if '施設・場所名' in df.columns:
         columns_to_keep.append('施設・場所名')
@@ -32,46 +30,47 @@ def load_data(file_path, key_column=None):
         columns_to_keep.append('df2_土砂')
 
     if key_column and key_column in df.columns:
-        columns_to_keep.append(key_column)  # キー列も保持
+        columns_to_keep.append(key_column)
 
     df_filtered = df[columns_to_keep]
     return df_filtered
 
-# 最も近い避難所を検索する関数
 @st.cache_data
 def find_nearest_shelters(df, lat, lon, filter_column=None, filter_value=None, top_n=5):
-    # 現在地からの距離を計算
     df['距離(km)'] = df.apply(
         lambda row: geodesic((lat, lon), (row['緯度'], row['経度'])).km, axis=1
     )
 
-    # 条件によるフィルタリング
     if filter_column and filter_value:
         filtered_df = df[df[filter_column] == filter_value]
     else:
         filtered_df = df
 
-    # 距離が近い順にソートし、上位N件を取得
     return filtered_df.sort_values(by='距離(km)').head(top_n)
 
-# 地図を生成する関数
 def plot_on_map(current_lat, current_lon, nearest_shelters):
-    map_center = [current_lat, current_lon]
-    m = folium.Map(location=map_center, zoom_start=14,
-                   tiles="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
-                   attr="Google Maps")
+    m = folium.Map(
+        location=[current_lat, current_lon],
+        zoom_start=14,
+        tiles="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+        attr="Google Maps"
+    )
 
-    # 現在位置を赤いマーカーで表示
     folium.Marker(
         location=[current_lat, current_lon],
         popup=folium.Popup("<b>現在位置</b>", max_width=300),
         icon=folium.Icon(color="red", icon="home")
     ).add_to(m)
 
-    # 避難所をマーカーで表示
     for _, row in nearest_shelters.iterrows():
         distance_km = row['距離(km)']
-        marker_color = "darkgreen" if distance_km < 0.5 else "darkblue" if distance_km < 1.0 else "lightgray"
+        if distance_km < 0.5:
+            marker_color = "darkgreen"
+        elif distance_km < 1.0:
+            marker_color = "darkblue"
+        else:
+            marker_color = "lightgray"
+
         popup_content = f"<b>{row['施設・場所名']}</b><br>距離: {distance_km:.1f} km<br>"
         folium.Marker(
             location=[row['緯度'], row['経度']],
@@ -81,29 +80,33 @@ def plot_on_map(current_lat, current_lon, nearest_shelters):
 
     return m
 
-# 地図をHTMLファイルとして保存する関数
 def save_map_as_html(map_object, file_name="map.html"):
     map_object.save(file_name)
     return file_name
 
-# Streamlitアプリのメイン処理
 def main():
-    # フォントサイズを変数で管理
-    TITLE_FONT_SIZE = "24px"
-    DESC_FONT_SIZE = "16px"
-    SUBTEXT_FONT_SIZE = "12px"
+    # -------------------------
+    # フォントサイズを変数管理
+    # -------------------------
+    TITLE_FONT_SIZE = "26px"       # メインタイトル
+    SUBTITLE_FONT_SIZE = "20px"    # サブ見出し
+    DESC_FONT_SIZE = "16px"        # 説明文
+    SUBTEXT_FONT_SIZE = "12px"     # さらに小さい補助テキスト
 
-    # アプリタイトル（変数を利用）
+    # メインタイトル
     st.markdown(f"""
     <h1 style="font-size: {TITLE_FONT_SIZE}; font-weight: normal; margin-bottom: 10px;">
         避難所検索アプリ（災害別絞込み）
     </h1>
     """, unsafe_allow_html=True)
 
-    # アプリの説明（変数を利用）
+    # アプリの説明
     st.markdown(f"""
     <div style="font-size: {DESC_FONT_SIZE}; line-height: 1.5;">
-        <h3 style="margin-bottom: 10px;">対象地域: 愛媛県＋隣接自治体</h3>
+        <!-- サブ見出しを h3 で定義し、font-size を明示的に指定 -->
+        <h3 style="font-size: {SUBTITLE_FONT_SIZE}; margin-bottom: 10px;">
+            対象地域: 愛媛県＋隣接自治体
+        </h3>
         <p style="margin-bottom: 5px;">
             <strong>隣接自治体名:</strong><br>
             <span style="font-size: {SUBTEXT_FONT_SIZE};">
@@ -124,26 +127,20 @@ def main():
     """, unsafe_allow_html=True)
     
     try:
-        # CSVファイルを読み込み
-        file_path1 = "mergeFromCity_1.csv"  # DF1
-        file_path2 = "ehime_hinan.csv"       # DF2
+        file_path1 = "mergeFromCity_1.csv"
+        file_path2 = "ehime_hinan.csv"
 
-        # データを前処理（それぞれのキー列を指定）
         df1 = load_data(file_path1, key_column="共通ID")
         df2 = load_data(file_path2, key_column="共通ID")
 
-        # キー列の名前を統一して結合
         combined_df = pd.merge(df1, df2, on="共通ID", how="left")
 
-        # 災害の選択
         disaster_options = ["地震", "津波", "高潮", "洪水", "土砂"]
         selected_disaster = st.selectbox("対応災害を選択", disaster_options)
 
-        # 対応状況の選択
         status_options = ["O", "A", "X"]
         selected_status = st.selectbox("対応状況を選択", status_options)
 
-        # 災害に対応する列名を決定
         disaster_columns = {
             "地震": "df2_地震",
             "津波": "df2_津波",
@@ -154,10 +151,8 @@ def main():
         filter_column = disaster_columns.get(selected_disaster)
         filter_value = selected_status
 
-        # 現在位置の入力
         user_input = st.text_input("現在位置の緯度・経度を入力してください（例: 33.81167462685436, 132.77887072795122）:")
 
-        # 入力フォーマットの正規化
         if not user_input:
             st.info("緯度・経度を入力してください。")
             return
@@ -165,7 +160,6 @@ def main():
         user_input = user_input.strip().strip('()').replace(" ", "")
         lat, lon = map(float, user_input.split(","))
 
-        # 最も近い避難所を検索
         nearest_shelters = find_nearest_shelters(
             combined_df,
             lat,
@@ -175,28 +169,23 @@ def main():
             top_n=5
         )
 
-        # 条件に一致する避難所がない場合の警告
         if len(nearest_shelters) == 0:
             st.warning(f"'{selected_disaster}' の '{selected_status}' に一致する避難所が見つかりませんでした。")
             return
 
-        # 結果をテーブルで表示
         st.subheader("最も近い避難所一覧")
-        display_columns = ['施設・場所名', '距離(km)', 'df2_地震', 'df2_津波', 'df2_高潮', 'df2_洪水', 'df2_土砂', '共通ID']
-        nearest_shelters_display = nearest_shelters[display_columns]
-        st.table(nearest_shelters_display)
+        display_columns = [
+            '施設・場所名', '距離(km)', 'df2_地震', 'df2_津波',
+            'df2_高潮', 'df2_洪水', 'df2_土砂', '共通ID'
+        ]
+        st.table(nearest_shelters[display_columns])
 
-        # 地図を生成
         map_object = plot_on_map(lat, lon, nearest_shelters)
-
-        # 地図をHTMLファイルとして保存
         saved_file = save_map_as_html(map_object, file_name="nearest_shelters_map.html")
 
-        # 地図をStreamlitで表示
         st.subheader("地図表示")
         st_folium(map_object, width=700, height=500)
 
-        # HTMLファイルをダウンロード可能にする
         with open(saved_file, "rb") as f:
             st.download_button(
                 label="地図をHTMLファイルとしてダウンロード",
