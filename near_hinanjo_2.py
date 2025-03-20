@@ -93,16 +93,15 @@ def save_map_as_html(map_object, file_name="map.html"):
 # Streamlitアプリのメイン処理
 def main():
     # アプリタイトル
-    st.title("避難所検索アプリ")
+    st.title("避難所検索アプリ（災害対応種別対応版）")
 
     # アプリの説明
     st.markdown("""
     <div style="font-size: 20px; line-height: 1.5;">
-        <h2 style="margin-bottom: 5px;">災害対応種別対応版</h2>
         <h3 style="margin-bottom: 10px;">対象地域: 愛媛県（２０市町）隣接自治体反映</h3>
         <p style="margin-bottom: 5px;">
             <strong>隣接自治体名:</strong><br>
-            <span style="font-size: 12px;">
+            <span style="font-size: 14px;">
                 徳島県: 三好市、香川県: 観音寺市<br>
                 高知県: 宿毛市、四万十市、四万十町、本山町、土佐町、いの町、仁淀川町、津野町、梼原町
             </span>
