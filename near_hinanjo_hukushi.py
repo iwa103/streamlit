@@ -15,7 +15,7 @@ def load_and_preprocess_data(file_path):
     df['共通ID'] = df['共通ID'].astype(str)
     
     # 共通IDの最後から2文字目が '2' である行を除外
-    df_filtered = df[df['共通ID'].str[-2] != '2']
+    df_filtered = df[df['共通ID'].str[-2] != '1']
     
     # 必要な列のみを残す（共通IDも残す場合）
     columns_to_keep = ['施設・場所名', '住所', '緯度', '経度', '共通ID']
@@ -62,7 +62,7 @@ def save_map_as_html(map_object, file_name="map.html"):
 
 # Streamlitアプリのメイン処理
 def main():
-    st.title("避難所検索アプリ：指定")
+    st.title("避難所検索アプリ：福祉")
     st.markdown("""
     <div style="font-size: 16px; line-height: 1.6;">
         <p><strong>使い方:</strong></p>
