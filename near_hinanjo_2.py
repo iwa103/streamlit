@@ -128,7 +128,7 @@ def main():
     
     try:
         file_path1 = "mergeFromCity_1.csv"
-        file_path2 = "ehime_hinan.csv"
+        file_path2 = "shikoku_hinan.csv"
 
         df1 = load_data(file_path1, key_column="共通ID")
         df2 = load_data(file_path2, key_column="共通ID")
