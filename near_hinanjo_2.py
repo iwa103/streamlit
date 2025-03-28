@@ -105,15 +105,8 @@ def main():
     <div style="font-size: {DESC_FONT_SIZE}; line-height: 1.5;">
         <!-- サブ見出しを h3 で定義し、font-size を明示的に指定 -->
         <h3 style="font-size: {SUBTITLE_FONT_SIZE}; margin-bottom: 10px;">
-            対象地域: 愛媛県＋隣接自治体
+            対象地域: 愛媛県、香川県
         </h3>
-        <p style="margin-bottom: 5px;">
-            <strong>隣接自治体名:</strong><br>
-            <span style="font-size: {SUBTEXT_FONT_SIZE};">
-                徳島県: 三好市、香川県: 観音寺市<br>
-                高知県: 宿毛市、四万十市、四万十町、本山町、土佐町、いの町、仁淀川町、津野町、梼原町
-            </span>
-        </p>
         <p><strong>使い方:</strong></p>
         <ol style="padding-left: 20px;">
             <li>
