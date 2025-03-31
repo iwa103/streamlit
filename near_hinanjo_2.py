@@ -105,7 +105,7 @@ def main():
     <div style="font-size: {DESC_FONT_SIZE}; line-height: 1.5;">
         <!-- サブ見出しを h3 で定義し、font-size を明示的に指定 -->
         <h3 style="font-size: {SUBTITLE_FONT_SIZE}; margin-bottom: 10px;">
-            対象地域: 愛媛県、香川県、徳島県、（作成中　高知県）
+            対象地域: 愛媛県、香川県、徳島県、高知県
         </h3>
         <p><strong>使い方:</strong></p>
         <ol style="padding-left: 20px;">
