@@ -96,7 +96,7 @@ def main():
     # メインタイトル (太文字にする)
     st.markdown(f"""
     <h1 style="font-size: {TITLE_FONT_SIZE}; font-weight: bold; margin-bottom: 10px;">
-        避難所検索アプリ（災害別絞込み）
+        避難所検索アプリ Ver 0.1（災害別絞込み）
     </h1>
     """, unsafe_allow_html=True)
 
