@@ -75,15 +75,18 @@ def main():
     st.markdown("<h1 style='font-size:26px;'>避難所検索アプリ Ver 0.2（災害別絞込み対応）</h1>", unsafe_allow_html=True)
     
     try:
-        # CSVファイル（国 + 自治体照合済）のパス
+        # 正しいファイルパスを設定
         file_path1 = "38213_1.csv"
         file_path2 = "自治体_避難所一覧_照合済_20250511_0801.csv"
 
+        # 重要：列名に合わせて読み込み（共通IDの列名に注意）
         df1 = load_data(file_path1, key_column="共通ID")
-        df2 = load_data(file_path2, key_column="共通ID")
-        combined_df = pd.merge(df1, df2, on="共通ID", how="left")
+        df2 = load_data(file_path2, key_column="共通ID（国）")
 
-        # 災害条件：列名を実データに対応
+        # 列名が異なるため left_on / right_on でマージ
+        combined_df = pd.merge(df1, df2, left_on="共通ID", right_on="共通ID（国）", how="left")
+
+        # 災害種類とステータスの選択肢（列名はCSVに合わせる）
         disaster_options = ["地震", "津波", "洪水", "土砂"]
         selected_disaster = st.selectbox("対応災害を選択", disaster_options)
         status_options = ["O", "A", "X"]
@@ -104,8 +107,14 @@ def main():
             return
 
         lat, lon = map(float, user_input.strip().strip('()').replace(" ", "").split(","))
+
         nearest_shelters = find_nearest_shelters(
-            combined_df, lat, lon, filter_column=filter_column, filter_value=selected_status, top_n=5
+            combined_df,
+            lat,
+            lon,
+            filter_column=filter_column,
+            filter_value=selected_status,
+            top_n=5
         )
 
         if nearest_shelters.empty:
