@@ -3,17 +3,17 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
 
-# Optional: remove any font override to avoid issues
+# Optional: use default font (no override to avoid cloud font issues)
 # matplotlib.rcParams['font.family'] = 'sans-serif'
 
 st.title("Scores by Model and Mode (Grouped by Subject)")
 
-# --- Load CSV from GitHub URL
+# --- Load CSV from GitHub
 CSV_URL = "llm_result/log_summary_by_model_mode_total.csv"
 df = pd.read_csv(CSV_URL)
 df = df[df["科目"] != "合計"]
 
-# --- Map subject names from Japanese to English
+# --- Map subject names to English
 subject_map = {
     "一般常識": "General Knowledge",
     "地理": "Geography",
@@ -26,7 +26,7 @@ df["Subject_EN"] = df["科目"].map(subject_map).fillna(df["科目"])
 df["ModelID"] = df["モデル"] + " (" + df["パラメータサイズ"].astype(str) + "B)"
 df["Label"] = df["ModelID"] + "\n[" + df["モード"] + "]"
 
-# --- Manual model sort: llm-jp → qwen3 → qwq (sorted by size)
+# --- Manual sort: llm-jp → qwen3 → qwq (sorted by size)
 model_order = []
 model_bases = ["llm-jp", "qwen3", "qwq"]
 for base in model_bases:
@@ -40,7 +40,7 @@ for base in model_bases:
 df["ModelID"] = pd.Categorical(df["ModelID"], categories=model_order, ordered=True)
 df = df.sort_values(["ModelID", "モード"])
 
-# --- Color assignment
+# --- Color mapping by model + mode
 def assign_color(row):
     if row["モデル"].startswith("llm-jp"):
         return "#4A90E2"  # Blue
@@ -62,12 +62,17 @@ selected_modes = st.sidebar.multiselect("Select modes", mode_list, default=mode_
 # --- Filtered data
 filtered_df = df[(df["ModelID"].isin(selected_models)) & (df["モード"].isin(selected_modes))]
 
+# --- Fixed subject order
+subject_order = ["General Knowledge", "Geography", "Mathematics", "SPI"]
+
 if filtered_df.empty:
     st.warning("No data available for the selected filters.")
 else:
-    for subject in filtered_df["Subject_EN"].unique():
-        st.subheader(f"[{subject}]")
+    for subject in subject_order:
+        if subject not in filtered_df["Subject_EN"].values:
+            continue
 
+        st.subheader(f"[{subject}]")
         sub_df = filtered_df[filtered_df["Subject_EN"] == subject]
 
         fig, ax = plt.subplots(figsize=(10, 4))
