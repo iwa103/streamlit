@@ -69,8 +69,8 @@ qwq,32,地理,think,29,73.25,1
 qwq,32,数学,think,52,95.75,4
 qwen2.5,1.5,一般常識,no_think,0,36,0
 qwen2.5,1.5,数学,no_think,0,53,0
-qwen2.5 ts,1.5,一般常識,no_think,0,74.75,0
-qwen2.5 ts,1.5,数学,no_think,0,50,0
+ts qwen2.5,1.5,一般常識,no_think,0,74.75,0
+ts qwen2.5,1.5,数学,no_think,0,50,0
 qwen2.5,3,一般常識,no_think,0,58,0
 qwen2.5,3,数学,no_think,0,76,0
 qwen2.5,7,一般常識,no_think,0,68.5,0
