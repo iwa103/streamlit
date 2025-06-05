@@ -9,7 +9,8 @@ import matplotlib
 st.title("Scores by Model and Mode (Grouped by Subject)")
 
 # Load CSV (adjust path or URL as needed)
-df = pd.read_csv("log_summary_by_model_mode_total.csv")
+#df = pd.read_csv("log_summary_by_model_mode_total.csv")
+df = pd.read_csv("llm_result/log_summary_by_model_mode_total.csv")
 df = df[df["科目"] != "合計"]  # Skip the 'Total' category
 
 # Create model ID and display label
