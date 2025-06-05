@@ -67,27 +67,5 @@ qwq,32,SPI,think,98,72.25,20
 qwq,32,一般常識,think,36,91.75,1
 qwq,32,地理,think,29,73.25,1
 qwq,32,数学,think,52,95.75,4
-qwen2.5,1.5,一般常識,no_think,0,36,0
-qwen2.5,1.5,数学,no_think,0,53,0
-ts qwen2.5,1.5,一般常識,no_think,0,74.75,0
-ts qwen2.5,1.5,数学,no_think,0,50,0
-qwen2.5,3,一般常識,no_think,0,58,0
-qwen2.5,3,数学,no_think,0,76,0
-qwen2.5,7,一般常識,no_think,0,68.5,0
-qwen2.5,7,数学,no_think,0,92,0
-qwen2.5,14,一般常識,no_think,0,83,0
-qwen2.5,14,数学,no_think,0,95.5,0
-qwen2.5,32,一般常識,no_think,0,88,0
-qwen2.5,32,数学,no_think,0,96,0
-qwen2.5,72,一般常識,no_think,0,89.5,0
-qwen2.5,72,数学,no_think,0,96.5,0
-gemma3,1,一般常識,no_think,0,40,0
-gemma3,1,数学,no_think,0,45.5,0
-gemma3,4,一般常識,no_think,0,72,0
-gemma3,4,数学,no_think,0,90.5,0
-Llama 3.1,8,一般常識,no_think,0,64.5,0
-Llama 3.1,8,数学,no_think,0,66.5,0
-Llama 3.2,3,一般常識,no_think,0,44,0
-Llama 3.2,3,数学,no_think,0,75.5,0
 GPT4o,9999,一般常識,no_think,0,96,0
 GPT4o,9999,数学,no_think,0,98,0
