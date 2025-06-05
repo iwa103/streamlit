@@ -9,7 +9,8 @@ matplotlib.rcParams['font.family'] = 'IPAexGothic'  # 'Noto Sans CJK JP' も可
 st.title("モデル別・モード別スコア（科目ごと + 並び順・色付き）")
 
 # --- CSV読み込み
-df = pd.read_csv("log_summary_by_model_mode_total.csv")
+#df = pd.read_csv("log_summary_by_model_mode_total.csv")
+df = pd.read_csv("llm_result/log_summary_by_model_mode_total.csv")
 df = df[df["科目"] != "合計"]
 
 # --- モデル表示列
