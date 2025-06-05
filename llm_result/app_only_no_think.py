@@ -2,16 +2,13 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-st.title("Scores by Model (no_think only, Grouped by Subject)")
+st.title("Scores by Model and Mode (Grouped by Subject)")
 
-# --- Load CSV from GitHub or local
-CSV_URL = "llm_result/log_summary_by_model_mode_total_no_think.csv"
+# --- Load CSV from GitHub
+CSV_URL = "llm_result/log_summary_by_model_mode_total.csv"
 df = pd.read_csv(CSV_URL)
 df = df[df["科目"] != "合計"]
 df = df.fillna(0)
-
-# --- Filter only no_think mode
-df = df[df["モード"] == "no_think"]
 
 # --- Map Japanese subject names to English
 subject_map = {
@@ -24,7 +21,7 @@ df["Subject_EN"] = df["科目"].map(subject_map).fillna(df["科目"])
 
 # --- Create ModelID and display label
 df["ModelID"] = df["モデル"] + " (" + df["パラメータサイズ"].astype(str) + "B)"
-df["Label"] = df["ModelID"]
+df["Label"] = df["ModelID"] + "\n[" + df["モード"] + "]"
 
 # --- Desired model display order
 model_bases = [
@@ -45,7 +42,7 @@ model_order = list(dict.fromkeys(model_order))
 
 # --- Apply categorical order
 df["ModelID"] = pd.Categorical(df["ModelID"], categories=model_order, ordered=True)
-df = df.sort_values(["ModelID"])
+df = df.sort_values(["ModelID", "モード"])
 
 # --- Assign color by model type
 def assign_color(row):
@@ -53,7 +50,7 @@ def assign_color(row):
     if model.startswith("llm-jp"):
         return "#4A90E2"
     elif model.startswith("qwen3"):
-        return "#E74C3C"
+        return "#E74C3C" if row["モード"] == "no_think" else "#F39C12"
     elif model.startswith("qwq"):
         return "#27AE60"
     elif model.startswith("GPT4o"):
@@ -76,11 +73,14 @@ df["Color"] = df.apply(assign_color, axis=1)
 model_id_list = df["ModelID"].cat.categories.tolist()
 selected_models = st.sidebar.multiselect("Select models", model_id_list, default=model_id_list)
 
-# --- Filtered data
-filtered_df = df[df["ModelID"].isin(selected_models)]
+mode_list = sorted(df["モード"].unique())
+selected_modes = st.sidebar.multiselect("Select modes", mode_list, default=["no_think"])
 
-# --- Fixed subject order
-subject_order = ["General Knowledge", "Geography", "Mathematics", "SPI"]
+# --- Filtered data
+filtered_df = df[(df["ModelID"].isin(selected_models)) & (df["モード"].isin(selected_modes))]
+
+# --- Fixed subject order (Only General Knowledge and Mathematics)
+subject_order = ["General Knowledge", "Mathematics"]
 
 if filtered_df.empty:
     st.warning("No data available for the selected filters.")
@@ -96,7 +96,7 @@ else:
         bars = ax.bar(sub_df["Label"], sub_df["スコア"], color=sub_df["Color"])
 
         ax.set_ylabel("Score")
-        ax.set_xlabel("Model")
+        ax.set_xlabel("Model (Mode)")
         ax.set_title(f"{subject}: Score by Model")
         ax.set_ylim(0, 105)
         ax.set_xticks(range(len(sub_df)))
