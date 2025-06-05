@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 st.title("Scores by Model and Mode (Grouped by Subject)")
 
 # --- Load CSV from GitHub
-CSV_URL = "llm_result/log_summary_by_model_mode_total.csv"
+CSV_URL = "llm_result/log_summary_by_model_mode_total_no_think.csv"
 df = pd.read_csv(CSV_URL)
 df = df[df["科目"] != "合計"]
 df = df.fillna(0)
