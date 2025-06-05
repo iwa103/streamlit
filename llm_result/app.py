@@ -1,19 +1,22 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import japanize_matplotlib
+import matplotlib
+
+# --- 日本語フォントを明示的に指定（Streamlit Cloud でも動作）
+matplotlib.rcParams['font.family'] = 'IPAexGothic'  # 'Noto Sans CJK JP' も可
 
 st.title("モデル別・モード別スコア（科目ごと + 並び順・色付き）")
 
-# CSV読み込み
+# --- CSV読み込み
 df = pd.read_csv("log_summary_by_model_mode_total.csv")
 df = df[df["科目"] != "合計"]
 
-# モデルIDと表示列
+# --- モデル表示列
 df["モデルID"] = df["モデル"] + " (" + df["パラメータサイズ"].astype(str) + "B)"
 df["モデル表示"] = df["モデルID"] + "\n[" + df["モード"] + "]"
 
-# 並び順：前方一致で LLMJP → Qwen3 → QwQ（＋パラメータ昇順）
+# --- モデル並び順：LLMJP → Qwen3 → QwQ、かつサイズ昇順
 model_order = []
 model_bases = ["llm-jp", "qwen3", "qwq"]
 for model_base in model_bases:
@@ -24,16 +27,16 @@ for model_base in model_bases:
         for m in matched_models:
             model_order.append(f"{m} ({size}B)")
 
-# モデルIDをカテゴリとして順序指定
+# --- 並び順をカテゴリで制御
 df["モデルID"] = pd.Categorical(df["モデルID"], categories=model_order, ordered=True)
 df = df.sort_values(["モデルID", "モード"])
 
-# 色指定関数（モデル + モードで分岐）
+# --- 色分け関数
 def get_color(row):
     if row["モデル"].startswith("llm-jp"):
         return "#4A90E2"  # 青
     elif row["モデル"].startswith("qwen3"):
-        return "#E74C3C" if row["モード"] == "no_think" else "#F39C12"  # 赤 / オレンジ
+        return "#E74C3C" if row["モード"] == "no_think" else "#F39C12"  # 赤/オレンジ
     elif row["モデル"].startswith("qwq"):
         return "#27AE60"  # 緑
     else:
@@ -41,24 +44,20 @@ def get_color(row):
 
 df["color"] = df.apply(get_color, axis=1)
 
-# --- サイドバー ---
-# モデル選択（並び順を反映）
+# --- サイドバー：モデル/モード選択
 model_id_list = df["モデルID"].cat.categories.tolist()
 selected_models = st.sidebar.multiselect("表示するモデル（複数選択可）", model_id_list, default=model_id_list)
 
-# モード選択
 mode_list = sorted(df["モード"].unique())
 selected_modes = st.sidebar.multiselect("表示するモード", mode_list, default=mode_list)
 
-# --- フィルター ---
+# --- フィルタ適用
 filtered_df = df[(df["モデルID"].isin(selected_models)) & (df["モード"].isin(selected_modes))]
 
 if filtered_df.empty:
     st.warning("選択された条件に一致するデータがありません。")
 else:
-    subjects = filtered_df["科目"].unique()
-
-    for subject in subjects:
+    for subject in filtered_df["科目"].unique():
         st.subheader(f"【{subject}】")
 
         sub_df = filtered_df[filtered_df["科目"] == subject]
