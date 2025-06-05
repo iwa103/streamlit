@@ -1,19 +1,16 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib
-
-# Optional: use default font (no override to avoid cloud font issues)
-# matplotlib.rcParams['font.family'] = 'sans-serif'
 
 st.title("Scores by Model and Mode (Grouped by Subject)")
 
 # --- Load CSV from GitHub
-CSV_URL = "llm_result/log_summary_by_model_mode_total.csv"
+CSV_URL = "https://raw.githubusercontent.com/your-username/your-repo/main/llm_result/log_summary_by_model_mode_total.csv"
 df = pd.read_csv(CSV_URL)
 df = df[df["科目"] != "合計"]
+df = df.fillna(0)
 
-# --- Map subject names to English
+# --- Map subjects to English
 subject_map = {
     "一般常識": "General Knowledge",
     "地理": "Geography",
@@ -22,32 +19,48 @@ subject_map = {
 }
 df["Subject_EN"] = df["科目"].map(subject_map).fillna(df["科目"])
 
-# --- Create model ID and display label
+# --- Create model label
 df["ModelID"] = df["モデル"] + " (" + df["パラメータサイズ"].astype(str) + "B)"
 df["Label"] = df["ModelID"] + "\n[" + df["モード"] + "]"
 
-# --- Manual sort: llm-jp → qwen3 → qwq (sorted by size)
+# --- Custom model order
+model_bases = [
+    "llm-jp", "qwen3", "qwq", "GPT4o",
+    "qwen2.5", "qwen2.5 ts", "gemma3", "Llama 3.1", "Llama 3.2"
+]
 model_order = []
-model_bases = ["llm-jp", "qwen3", "qwq"]
 for base in model_bases:
-    candidates = df[df["モデル"].str.startswith(base)]
+    candidates = df[df["モデル"].fillna("").str.startswith(base)]
     sizes = sorted(candidates["パラメータサイズ"].unique())
     for size in sizes:
-        matched_models = candidates[candidates["パラメータサイズ"] == size]["モデル"].unique()
-        for model_name in matched_models:
-            model_order.append(f"{model_name} ({size}B)")
+        matched = candidates[candidates["パラメータサイズ"] == size]["モデル"].unique()
+        for m in matched:
+            model_order.append(f"{m} ({size}B)")
 
 df["ModelID"] = pd.Categorical(df["ModelID"], categories=model_order, ordered=True)
 df = df.sort_values(["ModelID", "モード"])
 
-# --- Color mapping by model + mode
+# --- Color assignment
 def assign_color(row):
-    if row["モデル"].startswith("llm-jp"):
-        return "#4A90E2"  # Blue
-    elif row["モデル"].startswith("qwen3"):
-        return "#E74C3C" if row["モード"] == "no_think" else "#F39C12"  # Red / Orange
-    elif row["モデル"].startswith("qwq"):
-        return "#27AE60"  # Green
+    model = row["モデル"]
+    if model.startswith("llm-jp"):
+        return "#4A90E2"
+    elif model.startswith("qwen3"):
+        return "#E74C3C" if row["モード"] == "no_think" else "#F39C12"
+    elif model.startswith("qwq"):
+        return "#27AE60"
+    elif model.startswith("GPT4o"):
+        return "#7F8C8D"
+    elif model.startswith("qwen2.5 ts"):
+        return "#D35400"
+    elif model.startswith("qwen2.5"):
+        return "#9B59B6"
+    elif model.startswith("gemma3"):
+        return "#16A085"
+    elif model.startswith("Llama 3.1"):
+        return "#2980B9"
+    elif model.startswith("Llama 3.2"):
+        return "#1ABC9C"
     return "gray"
 
 df["Color"] = df.apply(assign_color, axis=1)
