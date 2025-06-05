@@ -3,21 +3,30 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
 
-# Optional: use system default font
+# Optional: remove any font override to avoid issues
 # matplotlib.rcParams['font.family'] = 'sans-serif'
 
 st.title("Scores by Model and Mode (Grouped by Subject)")
 
-# Load CSV (adjust path or URL as needed)
-#df = pd.read_csv("log_summary_by_model_mode_total.csv")
-df = pd.read_csv("llm_result/log_summary_by_model_mode_total.csv")
-df = df[df["科目"] != "合計"]  # Skip the 'Total' category
+# --- Load CSV from GitHub URL
+CSV_URL = "llm_result/log_summary_by_model_mode_total.csv"
+df = pd.read_csv(CSV_URL)
+df = df[df["科目"] != "合計"]
 
-# Create model ID and display label
+# --- Map subject names from Japanese to English
+subject_map = {
+    "一般常識": "General Knowledge",
+    "地理": "Geography",
+    "数学": "Mathematics",
+    "SPI": "SPI"
+}
+df["Subject_EN"] = df["科目"].map(subject_map).fillna(df["科目"])
+
+# --- Create model ID and display label
 df["ModelID"] = df["モデル"] + " (" + df["パラメータサイズ"].astype(str) + "B)"
 df["Label"] = df["ModelID"] + "\n[" + df["モード"] + "]"
 
-# Define display order: llm-jp → qwen3 → qwq, ascending by size
+# --- Manual model sort: llm-jp → qwen3 → qwq (sorted by size)
 model_order = []
 model_bases = ["llm-jp", "qwen3", "qwq"]
 for base in model_bases:
@@ -28,11 +37,10 @@ for base in model_bases:
         for model_name in matched_models:
             model_order.append(f"{model_name} ({size}B)")
 
-# Apply category sorting
 df["ModelID"] = pd.Categorical(df["ModelID"], categories=model_order, ordered=True)
 df = df.sort_values(["ModelID", "モード"])
 
-# Assign color by model and mode
+# --- Color assignment
 def assign_color(row):
     if row["モデル"].startswith("llm-jp"):
         return "#4A90E2"  # Blue
@@ -44,23 +52,23 @@ def assign_color(row):
 
 df["Color"] = df.apply(assign_color, axis=1)
 
-# Sidebar filters
+# --- Sidebar filters
 model_id_list = df["ModelID"].cat.categories.tolist()
 selected_models = st.sidebar.multiselect("Select models", model_id_list, default=model_id_list)
 
 mode_list = sorted(df["モード"].unique())
 selected_modes = st.sidebar.multiselect("Select modes", mode_list, default=mode_list)
 
-# Apply filters
+# --- Filtered data
 filtered_df = df[(df["ModelID"].isin(selected_models)) & (df["モード"].isin(selected_modes))]
 
 if filtered_df.empty:
     st.warning("No data available for the selected filters.")
 else:
-    for subject in filtered_df["科目"].unique():
+    for subject in filtered_df["Subject_EN"].unique():
         st.subheader(f"[{subject}]")
 
-        sub_df = filtered_df[filtered_df["科目"] == subject]
+        sub_df = filtered_df[filtered_df["Subject_EN"] == subject]
 
         fig, ax = plt.subplots(figsize=(10, 4))
         bars = ax.bar(sub_df["Label"], sub_df["スコア"], color=sub_df["Color"])
