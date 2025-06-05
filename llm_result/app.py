@@ -10,7 +10,7 @@ df = pd.read_csv(CSV_URL)
 df = df[df["科目"] != "合計"]
 df = df.fillna(0)
 
-# --- Map subjects to English
+# --- Map Japanese subject names to English
 subject_map = {
     "一般常識": "General Knowledge",
     "地理": "Geography",
@@ -19,11 +19,11 @@ subject_map = {
 }
 df["Subject_EN"] = df["科目"].map(subject_map).fillna(df["科目"])
 
-# --- Create model label
+# --- Create ModelID and display label
 df["ModelID"] = df["モデル"] + " (" + df["パラメータサイズ"].astype(str) + "B)"
 df["Label"] = df["ModelID"] + "\n[" + df["モード"] + "]"
 
-# --- Custom model order
+# --- Desired model display order
 model_bases = [
     "llm-jp", "qwen3", "qwq", "GPT4o",
     "qwen2.5", "qwen2.5 ts", "gemma3", "Llama 3.1", "Llama 3.2"
@@ -37,10 +37,14 @@ for base in model_bases:
         for m in matched:
             model_order.append(f"{m} ({size}B)")
 
+# ✅ Remove duplicates while preserving order
+model_order = list(dict.fromkeys(model_order))
+
+# --- Apply categorical order
 df["ModelID"] = pd.Categorical(df["ModelID"], categories=model_order, ordered=True)
 df = df.sort_values(["ModelID", "モード"])
 
-# --- Color assignment
+# --- Assign color by model type
 def assign_color(row):
     model = row["モデル"]
     if model.startswith("llm-jp"):
