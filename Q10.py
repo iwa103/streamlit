@@ -35,7 +35,10 @@ st.text_area("question", qdata["question"], height=250)
 copy_code = f"""
 <div style="text-align:center;">
 <button 
-onclick="navigator.clipboard.writeText(`{qdata["question"]}`)"
+onclick="
+navigator.clipboard.writeText(`{qdata["question"]}`);
+alert('コピーしました');
+"
 style="
     font-size:22px;
     padding:12px 28px;
