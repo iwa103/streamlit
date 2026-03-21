@@ -3,7 +3,9 @@ import json
 import pyperclip
 
 # JSONファイルパス（Windows）
-json_path = r"D:\LLM\性能確認用データセット\Q10評価\10question.json"
+json_path = r"10question.json"
+#json_path = r"D:\LLM\性能確認用データセット\Q10評価\10question.json"
+
 
 # JSON読み込み
 with open(json_path, "r", encoding="utf-8") as f:
