@@ -3,3 +3,4 @@ folium
 geopy
 pandas
 streamlit-folium
+pyperclip
